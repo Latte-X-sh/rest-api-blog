@@ -19,7 +19,7 @@ Native django app is also supported in branches with the django prefix.
 
     Owner owned objects
 
-Getting Started
+# Getting Started
 
 First clone the repository from Github and switch to the new directory:
 
