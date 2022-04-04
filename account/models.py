@@ -21,7 +21,7 @@ tag_choices =(
 # Create your models here.
 # The profile model - Extension of the user model
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.PROTECT)
+    user = models.OneToOneField(User,related_name="uuser", on_delete=models.PROTECT)
     profile_pictue = models.ImageField(default="default.jpg", upload_to="profile_pictures")
     bio = models.TextField()
     category = MultiSelectField(max_length=100,max_choices = len(tag_choices), choices=tag_choices)
@@ -51,7 +51,13 @@ class Post(models.Model):
     post_modified = models.DateTimeField(auto_now=True)
     post_published_date = models.DateTimeField(blank=True,null=True)
     post_published_status =  models.BooleanField(default=False)
-    post_author =  models.ForeignKey(User, on_delete=models.PROTECT)
-    post_category = models.ManyToManyField(Category,default='Random')
+    post_author =  models.ForeignKey(User,related_name="author_name",default="auth.User",on_delete=models.PROTECT)
+    post_category = models.ManyToManyField(Category,blank=False)
+    
+    def __str__(self) -> str:
+        return self.post_title
     
     
+    
+  
+        

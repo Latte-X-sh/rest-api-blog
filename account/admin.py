@@ -4,16 +4,34 @@ from .models import Profile, Category, Post
 
 
 # Register your models here.
-admin.site.register(Profile)
-admin.site.register(Category)
-admin.site.register(Post)
 
+
+
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    model= Profile
+    list_display=("id","user","bio")
+    search_fields =("user__username","id",)
+    
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    pass
+    
+@admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    model = Post
-    list_display = (
-        "id",
-        "title",
-        "subtitle",
-        "slug",
+    model=Post
+    list_display=("id","post_title","post_sb_title","post_author","post_published_status","post_date_created","post_published_date",)
+    list_filter=("post_author","post_category","post_published_date")
+    list_editable=("post_title","post_sb_title",)
+    search_fields = ("post_title","post_sb_title","post_url_slug")
+    prepopulated_fields={
+        "post_url_slug":(
+            "post_title","post_sb_title"
+        ),
+     
+    }
+    save_on_top =True
+    
         
-    )
+

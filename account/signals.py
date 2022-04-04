@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User   
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import pre_save, post_save, post_delete
 from django.dispatch import receiver
 
-from .models import Profile    
+from .models import Profile ,Post
     
 """
 This file is responsible for describing signals,
@@ -69,3 +69,5 @@ def destroy_profile(sender,instance,**kwargs):
 
     """
     instance.profile.delete()
+    
+
