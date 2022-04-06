@@ -41,6 +41,7 @@ class Category(models.Model):
 class Post(models.Model):
     class Meta:
         ordering = ["post_published_date"]
+        
     
     post_title =  models.CharField(max_length=100,unique=True)
     post_sb_title = models.CharField(max_length=100,blank=True)
@@ -51,11 +52,13 @@ class Post(models.Model):
     post_modified = models.DateTimeField(auto_now=True)
     post_published_date = models.DateTimeField(blank=True,null=True)
     post_published_status =  models.BooleanField(default=False)
-    post_author =  models.ForeignKey(User,related_name="author_name",default="auth.User",on_delete=models.PROTECT)
+    post_author =  models.ForeignKey(User,related_name="author_name",on_delete=models.PROTECT)
     post_category = models.ManyToManyField(Category,blank=False)
     
     def __str__(self) -> str:
         return self.post_title
+    
+    
     
     
     
