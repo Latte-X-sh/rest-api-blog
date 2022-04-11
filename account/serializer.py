@@ -12,6 +12,7 @@ class PostSerializers(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields ='__all__' 
+        lookup_field = 'post_url_slug'
         
 class CategorySerializers(serializers.ModelSerializer):
         model = Category

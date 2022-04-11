@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User   
-from django.db.models.signals import pre_save, post_save, post_delete
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
+from django.db import transaction
 
-from .models import Profile ,Post
+from .models import Post, Profile, Category
     
 """
 This file is responsible for describing signals,
@@ -19,6 +20,14 @@ The django dispatch is responsible for connecting receivers
 and senders
 
 """
+# define wrapper for adding m2m field since post_save wont work
+# as it is in a transaction
+def after_transaction_commit(func):
+    def inner(*args, **kwargs):
+        transaction.on_commit(lambda: func(*args, **kwargs))
+
+    return inner    
+
 
 @receiver(post_save, sender=User)
 def create_profile(sender,instance,created,**kwargs):
@@ -40,10 +49,11 @@ def create_profile(sender,instance,created,**kwargs):
     '''
     if created:
         Profile.objects.create(user=instance)
+               
         
-        
-@receiver(post_save, sender=User)
-def save_profile(sender,instance,**kwargs):
+@receiver(post_save, sender=Post)
+@after_transaction_commit
+def save_profile(sender,instance,created,**kwargs):
     """
     This signal function, saves a  Profile instance when the User model
     is created.
@@ -53,21 +63,11 @@ def save_profile(sender,instance,**kwargs):
     has been created.
     - instance: the user instance
     """
-    instance.profile.save()
-    
-    
-@receiver(post_delete, sender=User)    
-def destroy_profile(sender,instance,**kwargs):
-    """
-    This function is responsible for deleting the profile instance 
-    when the user has been deleted. 
-
-    Args:
-    - Sender : model that notifies the function,when the user instance
-    has been created.
-    - instance: the user instance
-
-    """
-    instance.profile.delete()
+    if created:
+        latest = Category.objects.latest('id')
+        if instance.post_category.exists() == False:
+            instance.post_category.add(latest)
+        else:
+            instance.post_category
     
 
