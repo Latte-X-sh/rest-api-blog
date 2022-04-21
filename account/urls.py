@@ -7,6 +7,7 @@ from rest_framework.routers import DefaultRouter
 from account import views
 
 router =  DefaultRouter()
+router.register(r'account',views.UsersRegistrationViewset,basename='account')
 router.register(r'posts', views.PostViewset, basename ="posts")
 router.register(r'profile',views.ProfileViewset, basename ="profile")
 urlpatterns = [
